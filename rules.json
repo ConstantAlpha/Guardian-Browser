@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "example-adult-site.com",
+        "another-bad-domain.net"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||ads.example.com",
+      "resourceTypes": ["main_frame", "sub_frame", "script", "image"]
+    }
+  }
+]
