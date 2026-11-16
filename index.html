@@ -1,235 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guardian — Safe Browsing</title>
-
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/guardian/manifest.json">
-    <meta name="theme-color" content="#1a73e8">
-
-    <!-- iOS Support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Guardian">
-    <link rel="apple-touch-icon" href="/guardian/icon-192x192.png">
-
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #202124;
-        }
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px 32px;
-            width: 100%;
-            max-width: 460px;
-            text-align: center;
-        }
-        .shield { font-size: 56px; line-height: 1; }
-        h1 { font-size: 28px; margin: 12px 0 4px; color: #0d47a1; }
-        .tagline { color: #5f6368; font-size: 14px; margin-bottom: 24px; }
-        .input-row { display: flex; gap: 8px; margin-bottom: 16px; }
-        input[type="url"] {
-            flex: 1;
-            padding: 12px 14px;
-            border: 2px solid #dadce0;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input[type="url"]:focus { border-color: #1a73e8; }
-        button {
-            padding: 12px 20px;
-            background: #1a73e8;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button:hover { background: #1557b0; }
-        button:disabled { background: #9aa0a6; cursor: not-allowed; }
-        .status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #5f6368;
-            padding: 12px;
-            background: #f1f3f4;
-            border-radius: 8px;
-            margin-top: 16px;
-        }
-        .dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #fbbc04;
-            animation: pulse 1.5s infinite;
-        }
-        .dot.ready { background: #34a853; animation: none; }
-        .dot.error { background: #ea4335; animation: none; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-        .install-btn {
-            background: transparent;
-            color: #1a73e8;
-            border: 2px solid #1a73e8;
-            margin-top: 16px;
-            display: none;
-        }
-        .install-btn:hover { background: #e8f0fe; }
-        .result {
-            margin-top: 16px;
-            font-size: 14px;
-            font-weight: 600;
-            min-height: 20px;
-        }
-        .result.blocked { color: #ea4335; }
-        .result.safe { color: #34a853; }
-    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guardian - Safe Browser</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#0f172a;color:#e2e8f0;height:100vh;display:flex;flex-direction:column}
+header{background:#111827;padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.logo{font-size:26px}
+h1{font-size:20px;margin:0}
+h1 span{color:#22c55e}
+.tagline{font-size:11px;color:#94a3b8;margin:0}
+#urlBar{flex:1;min-width:180px;padding:12px;border-radius:999px;border:1px solid #334155;background:#1e293b;color:white;font-size:15px;outline:none}
+#urlBar:focus{border-color:#22c55e}
+button{border:none;padding:11px 14px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px}
+.go{background:#22c55e;color:white}
+.home{background:#1e293b;color:white}
+#stats{display:flex;gap:8px;padding:8px 12px;background:#0b1020;font-size:12px;flex-wrap:wrap}
+.pill{background:#1e293b;padding:6px 10px;border-radius:999px}
+.pill b{color:#22c55e}
+#quick{display:flex;gap:8px;overflow:auto;padding:10px 12px;background:#111827}
+.quickBtn{background:#1e293b;color:white;padding:8px 12px;border-radius:999px;white-space:nowrap;font-size:13px}
+#frameWrap{flex:1;position:relative;background:white}
+iframe{width:100%;height:100%;border:none;background:white}
+#blocked{display:none;position:absolute;inset:0;background:#0f172a;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+#blocked .big{font-size:64px}
+#blocked h2{font-size:26px;margin:10px 0 5px}
+#blocked p{color:#94a3b8;max-width:400px;line-height:1.5;white-space:pre-line}
+#blocked button{margin-top:16px}
+#settings{padding:10px 12px;background:#111827;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px}
+label{display:flex;align-items:center;gap:6px;background:#1e293b;padding:8px 12px;border-radius:999px;cursor:pointer}
+input[type=checkbox]{width:18px;height:18px;accent-color:#22c55e}
+#log{max-height:100px;overflow:auto;padding:8px 12px;font-size:12px;color:#94a3b8;background:#0b1020}
+</style>
 </head>
 <body>
-    <div class="card">
-        <div class="shield">🛡️</div>
-        <h1>Guardian</h1>
-        <p class="tagline">Your shield against harmful sites and ads</p>
+<header>
+<div class="logo">🛡️</div>
+<div><h1>Guard<span>ian</span></h1><p class="tagline">Safe Browser • No Ads • No Adult Sites</p></div>
+<input id="urlBar" placeholder="Search or type site e.g. wikipedia.org" onkeydown="if(event.key==='Enter')go()">
+<button class="go" onclick="go()">Go →</button>
+<button class="home" onclick="goHome()">🏠</button>
+</header>
 
-        <div class="input-row">
-            <input type="url" id="urlInput" placeholder="Enter a URL to check…" autocomplete="off">
-            <button id="goBtn" onclick="checkAndNavigate()">Check</button>
-        </div>
+<div id="stats">
+<div class="pill">🛡️ Guardian Blocked: <b id="blockedCount">0</b></div>
+<div class="pill">🔞 Adult Sites: <b>ON</b></div>
+<div class="pill">📢 Ads: <b id="adStatus">ON</b></div>
+<div class="pill" id="currentSite">Home</div>
+</div>
 
-        <p id="result" class="result"></p>
+<div id="quick">
+<button class="quickBtn" onclick="openSite('https://en.wikipedia.org')">📚 Wikipedia</button>
+<button class="quickBtn" onclick="openSite('https://www.khanacademy.org')">🎓 Khan Academy</button>
+<button class="quickBtn" onclick="openSite('https://www.youtube.com')">▶️ YouTube</button>
+<button class="quickBtn" onclick="openSite('https://www.google.com')">🔍 Google</button>
+<button class="quickBtn" onclick="openSite('https://www.bbc.com/news')">📰 BBC News</button>
+<button class="quickBtn" onclick="openSite('https://scratch.mit.edu')">🎮 Scratch</button>
+</div>
 
-        <div class="status" id="status">
-            <span class="dot" id="statusDot"></span>
-            <span id="statusText">Loading blocklists…</span>
-        </div>
+<div id="settings">
+<label><input type="checkbox" id="blockAdult" checked onchange="updateSettings()"> 🔞 Block Adult Sites</label>
+<label><input type="checkbox" id="blockAds" checked onchange="updateSettings()"> 📢 Block Ads & Trackers</label>
+<label><input type="checkbox" id="blockGambling" checked> 🎰 Block Gambling</label>
+<label><input type="checkbox" id="safeSearch" checked> 👶 Safe Search Only</label>
+</div>
 
-        <button class="install-btn" id="installBtn" onclick="installApp()">📲 Install Guardian</button>
-    </div>
+<div id="frameWrap">
+<iframe id="browserFrame" src="https://en.wikipedia.org"></iframe>
+<div id="blocked">
+<div class="big">🛡️</div>
+<h2 id="blockedTitle">Blocked by Guardian</h2>
+<p id="blockedReason">This site is blocked by Guardian to keep you safe.</p>
+<button class="go" onclick="goHome()">Go Back Home →</button>
+<button class="home" onclick="hideBlocked()">Try Different Site</button>
+</div>
+</div>
 
-    <script>
-        // --- Register Service Worker ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/guardian/sw.js', { scope: '/guardian/' })
-                    .then(reg => console.log('Guardian SW registered:', reg.scope))
-                    .catch(err => console.error('SW registration failed:', err));
-            });
+<div id="log"><b>Guardian Log:</b> <span id="logText">Guardian started - protection ON</span></div>
 
-            // Listen for status messages from the service worker
-            navigator.serviceWorker.addEventListener('message', event => {
-                if (event.data && event.data.type === 'STATUS') {
-                    updateStatus(event.data.status, event.data.count);
-                }
-            });
-        }
+<script>
+let blockedCount = 0;
 
-        function updateStatus(state, count) {
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-            dot.className = 'dot ' + state;
-            if (state === 'ready') {
-                text.textContent = `Protection active — ${count.toLocaleString()} domains blocked`;
-            } else if (state === 'error') {
-                text.textContent = 'Failed to load blocklists';
-            } else {
-                text.textContent = 'Loading blocklists…';
-            }
-        }
+const adultKeywords = [
+  "porn","pornhub","xvideos","xnxx","redtube","brazzers","onlyfans","sex","xxx","adult",
+  "camgirl","stripchat","chaturbate","erotic","hentai","pornstar","nude","nsfw","xhamster","youporn"
+];
+const adultDomains = [
+  "pornhub.com","xvideos.com","xnxx.com","redtube.com","brazzers.com","onlyfans.com",
+  "chaturbate.com","stripchat.com","xhamster.com","youporn.com","porn.com"
+];
+const adDomains = [
+  "doubleclick.net","googlesyndication.com","googleadservices.com","ads.yahoo.com",
+  "adservice.google.com","taboola.com","outbrain.com","adsense","popads","popcash",
+  "adsterra","propellerads","analytics.google.com","facebook.net/tr","hotjar.com"
+];
+const gamblingKeywords = ["casino","betting","bet365","sportpesa","1xbet","poker","slot","gambling","betway"];
 
-        // --- Check URL locally & navigate ---
-        async function checkAndNavigate() {
-            const input = document.getElementById('urlInput');
-            const resultEl = document.getElementById('result');
-            const goBtn = document.getElementById('goBtn');
-            let raw = input.value.trim();
-
-            if (!raw) return;
-            // Add https:// if the user typed a bare domain
-            if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
-
-            let url;
-            try {
-                url = new URL(raw);
-            } catch {
-                resultEl.textContent = 'Invalid URL';
-                resultEl.className = 'result blocked';
-                return;
-            }
-
-            resultEl.textContent = 'Checking…';
-            resultEl.className = 'result';
-            goBtn.disabled = true;
-
-            try {
-                // Ask the service worker to verify (works offline once cached)
-                const sw = navigator.serviceWorker.controller;
-                if (sw) {
-                    const channel = new MessageChannel();
-                    const verdict = await new Promise(resolve => {
-                        channel.port1.onmessage = e => resolve(e.data.blocked);
-                        sw.postMessage({ type: 'CHECK_URL', hostname: url.hostname }, [channel.port2]);
-                    });
-                    if (verdict) {
-                        resultEl.textContent = '🚫 Blocked — harmful site';
-                        resultEl.className = 'result blocked';
-                        goBtn.disabled = false;
-                        return;
-                    }
-                }
-
-                resultEl.textContent = '✅ Safe — opening…';
-                resultEl.className = 'result safe';
-                // Navigating will trigger the SW fetch handler as a second check
-                window.location.href = url.href;
-            } catch (err) {
-                console.error(err);
-                resultEl.textContent = 'Check failed — try again';
-                resultEl.className = 'result blocked';
-                goBtn.disabled = false;
-            }
-        }
-
-        // Allow Enter key
-        document.getElementById('urlInput').addEventListener('keypress', e => {
-            if (e.key === 'Enter') checkAndNavigate();
-        });
-
-        // --- Install prompt ---
-        let deferredPrompt = null;
-        window.addEventListener('beforeinstallprompt', e => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'inline-block';
-        });
-
-        function installApp() {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(() => {
-                deferredPrompt = null;
-                document.getElementById('installBtn').style.display = 'none';
-            });
-        }
-
-        window.addEventListener('appinstalled', () => {
-            document.getElementById('installBtn').style.display = 'none';
-        });
-    </script>
+function log(msg){
+  document.getElementById("logText").innerText = new Date().toLocaleTimeString() + " - " + msg + " | " + document.getElementById("logText").innerText;
+}
+function isBlocked(url){
+  const lower = url.toLowerCase();
+  const blockAdult = document.getElementById("blockAdult").checked;
+  const blockAds = document.getElementById("blockAds").checked;
+  const blockGambling = document.getElementById("blockGambling").checked;
+  if(blockAdult){
+    for(let d of adultDomains) if(lower.includes(d)) return {type:"Adult Site", reason:"Guardian blocked this.\nThis is a known adult site."};
+    for(let k of adultKeywords) if(lower.includes(k)) return {type:"Adult Content", reason:"Guardian blocked this.\nURL contains adult keyword: '" + k + "'"};
+  }
+  if(blockAds){
+    for(let d of adDomains) if(lower.includes(d)) return {type:"Ad / Tracker", reason:"Guardian blocked this.\nThis is a known ad / tracker domain."};
+  }
+  if(blockGambling){
+    for(let k of gamblingKeywords) if(lower.includes(k)) return {type:"Gambling", reason:"Guardian blocked this.\nGambling sites are blocked."};
+  }
+  return null;
+}
+function showBlocked(result, url){
+  blockedCount++;
+  document.getElementById("blockedCount").innerText = blockedCount;
+  document.getElementById("blockedTitle").innerText = "Blocked by Guardian: " + result.type;
+  document.getElementById("blockedReason").innerText = result.reason + "\n\nTried to open: " + url;
+  document.getElementById("blocked").style.display = "flex";
+  log("BLOCKED " + result.type + " - " + url);
+}
+function hideBlocked(){ document.getElementById("blocked").style.display = "none"; }
+function go(){
+  let val = document.getElementById("urlBar").value.trim();
+  if(!val) return;
+  if(!val.includes(".") || val.includes(" ")){
+    let q = encodeURIComponent(val);
+    if(document.getElementById("safeSearch").checked){
+      openSite("https://duckduckgo.com/?q=" + q + "&kp=1&k1=-1");
+    } else {
+      openSite("https://duckduckgo.com/?q=" + q);
+    }
+    return;
+  }
+  if(!val.startsWith("http")) val = "https://" + val;
+  openSite(val);
+}
+function openSite(url){
+  const result = isBlocked(url);
+  document.getElementById("urlBar").value = url;
+  document.getElementById("currentSite").innerText = url.slice(0,40);
+  if(result){ showBlocked(result, url); return; }
+  hideBlocked();
+  document.getElementById("browserFrame").src = url;
+  log("Opened " + url);
+}
+function goHome(){
+  hideBlocked();
+  document.getElementById("urlBar").value = "";
+  document.getElementById("browserFrame").src = "https://en.wikipedia.org";
+  document.getElementById("currentSite").innerText = "Home";
+  log("Went Home");
+}
+function updateSettings(){
+  document.getElementById("adStatus").innerText = document.getElementById("blockAds").checked ? "ON" : "OFF";
+  log("Guardian settings updated");
+}
+</script>
 </body>
 </html>
