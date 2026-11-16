@@ -1,51 +1,15 @@
 {
-  "name": "Guardian — Safe Browsing",
-  "short_name": "Guardian",
-  "description": "A safe walled garden that blocks adult content and ad domains before they load.",
-  "id": "/guardian/",
-  "start_url": "/guardian/",
-  "scope": "/guardian/",
-  "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
-  "orientation": "portrait-primary",
-  "background_color": "#ffffff",
-  "theme_color": "#1a73e8",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": ["security", "productivity", "utilities"],
-  "icons": [
-    {
-      "src": "/guardian/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/guardian/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/guardian/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/guardian/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Check a URL",
-      "short_name": "Check",
-      "description": "Quickly check whether a site is safe",
-      "url": "/guardian/?action=check",
-      "icons": [{ "src": "/guardian/icon-192x192.png", "sizes": "192x192" }]
-    }
-  ]
+  "manifest_version": 3,
+  "name": "Guardian Extension",
+  "version": "1.0",
+  "description": "Blocks adult and ad domains across all tabs.",
+  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback"],
+  "host_permissions": ["<all_urls>"],
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "blocklist",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  }
 }
