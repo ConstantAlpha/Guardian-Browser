@@ -1,28 +1,37 @@
+<!-- blocked.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blocked by Guardian</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f8f9fa; margin: 0;
-               display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .box { background: #fff; padding: 40px 32px; border-radius: 16px; max-width: 480px; text-align: center;
-               box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-top: 6px solid #ea4335; }
-        h1 { color: #ea4335; font-size: 24px; margin: 12px 0; }
-        p { color: #5f6368; line-height: 1.5; }
-        a { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #1a73e8;
-            color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; }
-        a:hover { background: #1557b0; }
-    </style>
+    <title>Access Restricted</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="box">
-        <div style="font-size:56px">🛡️</div>
-        <h1>Blocked by Guardian</h1>
-        <p>The site you tried to visit appears on a known blocklist for adult content or ad/malware domains.</p>
-        <p>Your protection is working as intended.</p>
-        <a href="/guardian/">← Back to safety</a>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-6 text-center">
+
+    <div class="max-w-md bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl">
+        <div class="text-5xl mb-4">🛡️</div>
+        <h1 id="heading-title" class="text-2xl font-bold mb-2">Content Blocked</h1>
+        <p class="text-slate-400 text-sm mb-6">
+            Access to this resource has been blocked by your <span class="text-sky-400 font-semibold">Content Shield</span> preferences.
+        </p>
+
+        <div class="bg-slate-800/50 border border-slate-700/50 p-4 rounded-xl text-sm italic text-slate-300 mb-6" id="quote">
+            "Focus is a muscle. Every time you resist distraction, it gets stronger."
+        </div>
+
+        <button onclick="window.history.back()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-5 py-2 rounded-xl text-sm transition">
+            Go Back to Safety
+        </button>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        const site = urlParams.get('site');
+
+        if (category) {
+            document.getElementById('heading-title').textContent = `${category} Blocked`;
+        }
+    </script>
 </body>
 </html>
