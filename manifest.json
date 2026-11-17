@@ -1,15 +1,42 @@
 {
   "manifest_version": 3,
-  "name": "Guardian Extension",
-  "version": "1.0",
-  "description": "Blocks adult and ad domains across all tabs.",
-  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback"],
-  "host_permissions": ["<all_urls>"],
+  "name": "Focus & Content Shield",
+  "version": "2.0",
+  "description": "Block ads, adult content, gambling, and distracting sites.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_width": 320,
+    "default_height": 450
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "declarative_net_request": {
-    "rule_resources": [{
-      "id": "blocklist",
-      "enabled": true,
-      "path": "rules.json"
-    }]
+    "rule_resources": [
+      {
+        "id": "ads_rules",
+        "enabled": true,
+        "path": "rules/ads.json"
+      },
+      {
+        "id": "adult_rules",
+        "enabled": true,
+        "path": "rules/adult.json"
+      },
+      {
+        "id": "gambling_rules",
+        "enabled": true,
+        "path": "rules/gambling.json"
+      }
+    ]
   }
 }
