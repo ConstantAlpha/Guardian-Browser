@@ -1,167 +1,125 @@
+<!-- popup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guardian - Safe Browser</title>
-<link rel="icon" href="logo.png">
-<style>
-*{box-sizing:border-box}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#0f172a;color:#e2e8f0;height:100vh;display:flex;flex-direction:column}
-header{background:#111827;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.logoImg{width:46px;height:46px;border-radius:12px;object-fit:contain;background:white;padding:2px;flex-shrink:0}
-h1{font-size:20px;margin:0}
-h1 span{color:#22c55e}
-.tagline{font-size:11px;color:#94a3b8;margin:0}
-#urlBar{flex:1;min-width:180px;padding:12px;border-radius:999px;border:1px solid #334155;background:#1e293b;color:white;font-size:15px;outline:none}
-#urlBar:focus{border-color:#22c55e}
-button{border:none;padding:11px 14px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px}
-.go{background:#22c55e;color:white}
-.home{background:#1e293b;color:white}
-#stats{display:flex;gap:8px;padding:8px 12px;background:#0b1020;font-size:12px;flex-wrap:wrap}
-.pill{background:#1e293b;padding:6px 10px;border-radius:999px}
-.pill b{color:#22c55e}
-#quick{display:flex;gap:8px;overflow:auto;padding:10px 12px;background:#111827}
-.quickBtn{background:#1e293b;color:white;padding:8px 12px;border-radius:999px;white-space:nowrap;font-size:13px}
-#frameWrap{flex:1;position:relative;background:white}
-iframe{width:100%;height:100%;border:none;background:white}
-#blocked{display:none;position:absolute;inset:0;background:#0f172a;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
-#blocked .bigLogo{width:130px;height:130px;object-fit:contain;background:white;border-radius:22px;padding:10px}
-#blocked h2{font-size:26px;margin:14px 0 5px}
-#blocked p{color:#94a3b8;max-width:400px;line-height:1.5;white-space:pre-line}
-#blocked button{margin-top:16px}
-#settings{padding:10px 12px;background:#111827;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px}
-label{display:flex;align-items:center;gap:6px;background:#1e293b;padding:8px 12px;border-radius:999px;cursor:pointer}
-input[type=checkbox]{width:18px;height:18px;accent-color:#22c55e}
-#log{max-height:100px;overflow:auto;padding:8px 12px;font-size:12px;color:#94a3b8;background:#0b1020}
-</style>
+    <meta charset="UTF-8">
+    <title>Focus & Content Shield</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<header>
-<img src="logo.png" class="logoImg" alt="Guardian Logo" onerror="this.style.display='none'">
-<div><h1>Guard<span>ian</span></h1><p class="tagline">Safe Browser • No Ads • No Adult Sites</p></div>
-<input id="urlBar" placeholder="Search or type site e.g. wikipedia.org" onkeydown="if(event.key==='Enter')go()">
-<button class="go" onclick="go()">Go →</button>
-<button class="home" onclick="goHome()">🏠</button>
-</header>
+<body class="bg-slate-900 text-slate-100 w-80 p-4 font-sans select-none">
+    
+    <h1 class="text-base font-bold mb-3 flex items-center justify-between">
+        <span>🛡️ Content Shield</span>
+        <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">Active</span>
+    </h1>
 
-<div id="stats">
-<div class="pill">🛡️ Guardian Blocked: <b id="blockedCount">0</b></div>
-<div class="pill">🔞 Adult Sites: <b>ON</b></div>
-<div class="pill">📢 Ads: <b id="adStatus">ON</b></div>
-<div class="pill" id="currentSite">Home</div>
-</div>
+    <!-- Protection Toggles -->
+    <div class="space-y-2 mb-4 bg-slate-800/50 p-3 rounded-xl border border-slate-700/50 text-sm">
+        <label class="flex items-center justify-between cursor-pointer">
+            <span>🚫 Block Ads & Trackers</span>
+            <input type="checkbox" id="toggle-ads" class="accent-sky-500 w-4 h-4" checked>
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+            <span>🔞 Block Adult Content</span>
+            <input type="checkbox" id="toggle-adult" class="accent-sky-500 w-4 h-4" checked>
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+            <span>🎲 Block Gambling Ads/Sites</span>
+            <input type="checkbox" id="toggle-gambling" class="accent-sky-500 w-4 h-4" checked>
+        </label>
+    </div>
 
-<div id="quick">
-<button class="quickBtn" onclick="openSite('https://en.wikipedia.org')">📚 Wikipedia</button>
-<button class="quickBtn" onclick="openSite('https://www.khanacademy.org')">🎓 Khan Academy</button>
-<button class="quickBtn" onclick="openSite('https://www.youtube.com')">▶️ YouTube</button>
-<button class="quickBtn" onclick="openSite('https://www.google.com')">🔍 Google</button>
-<button class="quickBtn" onclick="openSite('https://www.bbc.com/news')">📰 BBC News</button>
-<button class="quickBtn" onclick="openSite('https://scratch.mit.edu')">🎮 Scratch</button>
-</div>
+    <!-- Custom Add Form -->
+    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Custom Site Blocklist</div>
+    <form id="add-form" class="flex gap-2 mb-3">
+        <input 
+            type="text" 
+            id="site-input" 
+            placeholder="e.g. twitter.com" 
+            class="flex-1 bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-sky-500"
+            required
+        >
+        <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 rounded text-xs font-semibold transition">
+            Add
+        </button>
+    </form>
 
-<div id="settings">
-<label><input type="checkbox" id="blockAdult" checked onchange="updateSettings()"> 🔞 Block Adult Sites</label>
-<label><input type="checkbox" id="blockAds" checked onchange="updateSettings()"> 📢 Block Ads & Trackers</label>
-<label><input type="checkbox" id="blockGambling" checked> 🎰 Block Gambling</label>
-<label><input type="checkbox" id="safeSearch" checked> 👶 Safe Search Only</label>
-</div>
+    <!-- Custom List UI -->
+    <ul id="site-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+        <li class="text-slate-500 text-xs text-center py-2">No custom sites added.</li>
+    </ul>
 
-<div id="frameWrap">
-<iframe id="browserFrame" src="https://en.wikipedia.org"></iframe>
-<div id="blocked">
-<img src="logo.png" class="bigLogo" alt="Guardian">
-<h2 id="blockedTitle">Blocked by Guardian</h2>
-<p id="blockedReason">This site is blocked by Guardian to keep you safe.</p>
-<button class="go" onclick="goHome()">Go Back Home →</button>
-<button class="home" onclick="hideBlocked()">Try Different Site</button>
-</div>
-</div>
+    <script>
+        const toggleAds = document.getElementById('toggle-ads');
+        const toggleAdult = document.getElementById('toggle-adult');
+        const toggleGambling = document.getElementById('toggle-gambling');
+        const form = document.getElementById('add-form');
+        const input = document.getElementById('site-input');
+        const siteList = document.getElementById('site-list');
 
-<div id="log"><b>Guardian Log:</b> <span id="logText">Guardian started - protection ON</span></div>
+        // Load states
+        chrome.storage.local.get(['toggles', 'blockedSites'], (data) => {
+            const toggles = data.toggles || { ads: true, adult: true, gambling: true };
+            toggleAds.checked = toggles.ads;
+            toggleAdult.checked = toggles.adult;
+            toggleGambling.checked = toggles.gambling;
+            loadCustomSites(data.blockedSites || []);
+        });
 
-<script>
-let blockedCount = 0;
+        // Save toggle changes
+        function saveToggles() {
+            const toggles = {
+                ads: toggleAds.checked,
+                adult: toggleAdult.checked,
+                gambling: toggleGambling.checked
+            };
+            chrome.storage.local.set({ toggles });
+        }
 
-const adultKeywords = [
-  "porn","pornhub","xvideos","xnxx","redtube","brazzers","onlyfans","sex","xxx","adult",
-  "camgirl","stripchat","chaturbate","erotic","hentai","pornstar","nude","nsfw","xhamster","youporn"
-];
-const adultDomains = [
-  "pornhub.com","xvideos.com","xnxx.com","redtube.com","brazzers.com","onlyfans.com",
-  "chaturbate.com","stripchat.com","xhamster.com","youporn.com","porn.com"
-];
-const adDomains = [
-  "doubleclick.net","googlesyndication.com","googleadservices.com","ads.yahoo.com",
-  "adservice.google.com","taboola.com","outbrain.com","adsense","popads","popcash",
-  "adsterra","propellerads","analytics.google.com","facebook.net/tr","hotjar.com"
-];
-const gamblingKeywords = ["casino","betting","bet365","sportpesa","1xbet","poker","slot","gambling","betway"];
+        toggleAds.addEventListener('change', saveToggles);
+        toggleAdult.addEventListener('change', saveToggles);
+        toggleGambling.addEventListener('change', saveToggles);
 
-function log(msg){
-  document.getElementById("logText").innerText = new Date().toLocaleTimeString() + " - " + msg + " | " + document.getElementById("logText").innerText;
-}
-function isBlocked(url){
-  const lower = url.toLowerCase();
-  const blockAdult = document.getElementById("blockAdult").checked;
-  const blockAds = document.getElementById("blockAds").checked;
-  const blockGambling = document.getElementById("blockGambling").checked;
-  if(blockAdult){
-    for(let d of adultDomains) if(lower.includes(d)) return {type:"Adult Site", reason:"Guardian blocked this.\nThis is a known adult site."};
-    for(let k of adultKeywords) if(lower.includes(k)) return {type:"Adult Content", reason:"Guardian blocked this.\nURL contains adult keyword: '" + k + "'"};
-  }
-  if(blockAds){
-    for(let d of adDomains) if(lower.includes(d)) return {type:"Ad / Tracker", reason:"Guardian blocked this.\nThis is a known ad / tracker domain."};
-  }
-  if(blockGambling){
-    for(let k of gamblingKeywords) if(lower.includes(k)) return {type:"Gambling", reason:"Guardian blocked this.\nGambling sites are blocked."};
-  }
-  return null;
-}
-function showBlocked(result, url){
-  blockedCount++;
-  document.getElementById("blockedCount").innerText = blockedCount;
-  document.getElementById("blockedTitle").innerText = "Blocked by Guardian: " + result.type;
-  document.getElementById("blockedReason").innerText = result.reason + "\n\nTried to open: " + url;
-  document.getElementById("blocked").style.display = "flex";
-  log("BLOCKED " + result.type + " - " + url);
-}
-function hideBlocked(){ document.getElementById("blocked").style.display = "none"; }
-function go(){
-  let val = document.getElementById("urlBar").value.trim();
-  if(!val) return;
-  if(!val.includes(".") || val.includes(" ")){
-    let q = encodeURIComponent(val);
-    if(document.getElementById("safeSearch").checked){
-      openSite("https://duckduckgo.com/?q=" + q + "&kp=1&k1=-1");
-    } else {
-      openSite("https://duckduckgo.com/?q=" + q);
-    }
-    return;
-  }
-  if(!val.startsWith("http")) val = "https://" + val;
-  openSite(val);
-}
-function openSite(url){
-  const result = isBlocked(url);
-  document.getElementById("urlBar").value = url;
-  document.getElementById("currentSite").innerText = url.slice(0,40);
-  if(result){ showBlocked(result, url); return; }
-  hideBlocked();
-  document.getElementById("browserFrame").src = url;
-  log("Opened " + url);
-}
-function goHome(){
-  hideBlocked();
-  document.getElementById("urlBar").value = "";
-  document.getElementById("browserFrame").src = "https://en.wikipedia.org";
-  document.getElementById("currentSite").innerText = "Home";
-  log("Went Home");
-}
-function updateSettings(){
-  document.getElementById("adStatus").innerText = document.getElementById("blockAds").checked ? "ON" : "OFF";
-  log("Guardian settings updated");
-}
-</script>
+        // Render Custom List
+        function loadCustomSites(sites) {
+            if (sites.length === 0) {
+                siteList.innerHTML = `<li class="text-slate-500 text-xs text-center py-2">No custom sites added.</li>`;
+                return;
+            }
+            siteList.innerHTML = sites.map((site, index) => `
+                <li class="flex justify-between items-center bg-slate-800 px-2.5 py-1 rounded text-xs">
+                    <span class="truncate max-w-[190px]">${site}</span>
+                    <button onclick="removeSite(${index})" class="text-rose-400 hover:text-rose-300 font-bold ml-2">✕</button>
+                </li>
+            `).join('');
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = input.value.trim().toLowerCase();
+            if (!val) return;
+
+            chrome.storage.local.get(['blockedSites'], (data) => {
+                const sites = data.blockedSites || [];
+                if (!sites.includes(val)) {
+                    sites.push(val);
+                    chrome.storage.local.set({ blockedSites: sites }, () => {
+                        input.value = '';
+                        loadCustomSites(sites);
+                    });
+                }
+            });
+        });
+
+        window.removeSite = function(index) {
+            chrome.storage.local.get(['blockedSites'], (data) => {
+                const sites = data.blockedSites || [];
+                sites.splice(index, 1);
+                chrome.storage.local.set({ blockedSites: sites }, () => {
+                    loadCustomSites(sites);
+                });
+            });
+        };
+    </script>
 </body>
 </html>
